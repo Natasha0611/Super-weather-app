@@ -7,10 +7,122 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/ff20528f6d.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="Super-weather-app/styles.css">
     <title>Weather</title>
 </head>
-
+<style>
+  body{
+    background-color: white;
+ }
+ h1{
+     color: rgb(34, 68, 57);
+     font-size: 90px;
+     margin-left: 10px;
+     margin-top: 10px;
+ }
+ #search-form{
+     margin-left:20px;
+     margin-top:20px;
+     width: 400px;
+     display: block;
+     font-size: large;
+ }
+ .precipitations{
+     position: relative;
+     bottom: 500px;
+     left: 720px;
+     font-weight: bold;
+ }
+ .wind{
+  color: rgb(32, 69, 57);
+ font-size: 20px;
+ font-weight: normal;
+ }
+ h3{
+ color: rgb(32, 69, 57);
+ font-size: 40px;
+ font-weight: normal;
+ position: relative;
+ bottom: 100px;
+ margin-left: 10px;
+ }
+ .content{ 
+     display: block;
+     max-width: 1000px;
+     margin: 0 auto;
+     padding: 30px;
+     background: linear-gradient(109.6deg, rgb(17, 151, 147) 11.2%, rgb(154, 214, 212) 55.4%, rgb(255, 233, 171) 100.2%);
+     border-radius: 30px;
+     border: 5px;
+     
+ } 
+ .fa-solid{
+   font-size: 90px;
+   position:relative;
+   margin-left: 10px;
+   top: 30px;
+   color:white;
+ } 
+ .temperature{
+     color: rgb(32, 69, 57);
+     font-size: 100px;
+     position: relative;
+     bottom: 90px;
+     margin-left: 180px;
+ } 
+ 
+ .container{
+     color: aquamarine;
+     position: relative;
+    top: 100px;
+}
+     
+ 
+ .col{
+     color: white;
+     font-size: 30px;
+     font-weight: bold;
+ }
+ 
+ .temp{
+     font-size: 17px;
+     color: rgb(32, 69, 57);
+     margin-top:0;
+ }
+ .emoji{
+     margin-left: 15px;
+ }
+ .units{
+    font-size: 25px;
+    color:rgb(32, 69, 57);
+    position: relative;
+     bottom: 185px;
+     margin-left: 290px;
+}
+h2{
+    color:rgb(32, 69, 57);
+    font-size: 20px;
+    padding: 20px auto;
+    margin-left:20px;
+    margin-top:10px;
+}
+#celsius-link,
+#fahrenheit-link{
+    text-decoration: none
+}
+.week{
+    position: relative;
+    top: 100px;
+}
+#temperature-description{
+  text-transform: capitalize;
+  margin-left: 20px;
+}
+#current{
+    position: relative;
+    margin-left: 330px;
+    bottom: 30px;
+}
+</style>
 <body>
     <div class="content">
       <form id="search-form">
@@ -86,6 +198,89 @@
       <p class="wind" id="humidity">Humidity</p>
       <p class="wind" id="pressure">Pressure</p>
     </div>
-      <script src="Super-weather-app/script.js></script>
-      </body>
-  </html>
+<script>
+  let now = new Date();
+    let h2 = document.querySelector("h2");
+    let date = now.getDate();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let year = now.getFullYear();
+   
+    let days = ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+    let day = days[now.getDay(1)];
+    let months = ["Jan", "Feb","Mar","Apr","May", "Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    let month = months[now.getMonth(3)];
+
+    h2.innerHTML=`${day} ${hours}:${minutes}`
+   
+    function search(event){
+    event.preventDefault();
+    let searchInput = document.querySelector("#search-text-input");
+    let current = document.querySelector("current-text-input");
+    let apiKey="33cf8be18c8c070ad4040b123d2c56e2";
+    let units = "metric";
+    let apiEndpoint = "https://api.openweathermap.org/data/2.5/weather";
+    let apiUrl= `${apiEndpoint}?q=${searchInput.value}&appid=${apiKey}&units=${units}`;
+    let h1 = document.querySelector("h1");
+    if(searchInput.value){
+        h1.innerHTML = `${searchInput.value}`;
+        function showWeather(response){
+        console.log(response.data);
+        let temperature = Math.round(response.data.main.temp);
+        let temperatureElement = document.querySelector("#temperature");
+        let description = document.querySelector("#temperature-description");
+        description.innerHTML = response.data.weather[0].description;
+        let wind = document.querySelector("#wind");
+        wind.innerHTML = ` Wind is ${Math.round(response.data.wind.speed)}m/s ${response.data.wind.deg}°`;
+        let humidity = document.querySelector("#humidity");
+        humidity.innerHTML =`Humidity is ${response.data.main.humidity}%`;
+        let pressure = document.querySelector("#pressure");
+        pressure.innerHTML =`Pressure is ${response.data.main.pressure}hPa`;
+        temperatureElement.innerHTML = `${temperature}°C`;
+    }
+    axios.get(`${apiUrl}&appid=${apiKey}`).then(showWeather); 
+}
+ else{
+        h1.innerHTML = null;
+    }
+}
+let form = document.querySelector("#search-form");
+form.addEventListener("submit", search);
+function show(){
+function showTemperature(response) {
+  console.log(response.data.main.temp);
+  let temperature = Math.round(response.data.main.temp);
+  let wind = document.querySelector("#wind");
+  wind.innerHTML = ` Wind is ${Math.round(response.data.wind.speed)}m/s ${response.data.wind.deg}°`;
+  let humidity = document.querySelector("#humidity");
+  humidity.innerHTML =`Humidity is ${response.data.main.humidity}%`;
+  let pressure = document.querySelector("#pressure");
+  pressure.innerHTML =`Pressure is ${response.data.main.pressure}hPa`;
+  let temperatureElement = document.querySelector("#temperature");
+  temperatureElement.innerHTML  = `${temperature}°C`;
+  let description = document.querySelector("#temperature-description");
+ description.innerHTML = response.data.weather[0].description;
+ let h1 = document.querySelector("h1");
+  h1.innerHTML = response.data.name;
+}
+  
+function handlePosition(position) {
+  console.log(position.coords.latitude);
+  console.log(position.coords.longitude);
+  let units = "metric";
+  let longitude = position.coords.longitude;
+  let latitude = position.coords.latitude;
+  let apiKey = "907fef83425ee6575ce345a2f87d8989";
+  let apiEndpoint = "https://api.openweathermap.org/data/2.5/weather";
+  let apiUrl = `${apiEndpoint}?lat=${latitude}
+&lon=${longitude}&appid=${apiKey}&units=${units}`;
+  axios.get(`${apiUrl}&appid=${apiKey}`).then(showTemperature);
+}
+    navigator.geolocation.getCurrentPosition(handlePosition);
+}
+let button = document.querySelector("#current");
+button.addEventListener("click", show);
+
+</script>
+  </body>
+</html>
